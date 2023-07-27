@@ -4,7 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "olive.c"
-
+//olivec EP1 1:13:24
 #define WIDTH 800
 #define HEIGHT 600
 
