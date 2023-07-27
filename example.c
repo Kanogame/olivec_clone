@@ -2,36 +2,46 @@
 #include <stdint.h>
 #include <errno.h>
 #include <string.h>
+#include <stdbool.h>
 #include "olive.c"
 
 #define WIDTH 800
 #define HEIGHT 600
 
-void olivec_fill_rect(uint32_t *pixels, size_t pixels_width, size_t pixels_height, int x0, int y0, size_t w, size_t h, uint32_t color) {
-    for (int dy = 0; dy <(int) h; dy++) {
-        int y = y0 + dy;
-        if (0 <= y && y < (int)pixels_height) {
-            for (int dx = 0; dx < (int) w; dx++) {
-                int x = x0 + dx;
-                if (0 <= x && x < (int) pixels_width) {
-                    pixels[y*pixels_width + x] = color;
-                }
-            }
-        }
-    }
-}
 
 static uint32_t pixels[HEIGHT*WIDTH];
 
-int main(void) {
+#define COLS 8
+#define ROWS 6
+#define CELL_WIDTH (WIDTH/COLS)
+#define CELL_HEIGHT (HEIGHT/ROWS)
+#define BACKGROUND_COLOR 0xFF202020;
+
+bool checker_example() {
     olivec_fill(pixels, WIDTH, HEIGHT, 0xFF202020);
-    size_t rw = 50 *4;
-    size_t rh = 30 * 4;
-    olivec_fill_rect(pixels, WIDTH, HEIGHT, WIDTH/2 - rw/2, HEIGHT/2 - rh/2, rw, rh, 0xFF2020FF);
-    const char *file_path = "output.ppm";
+
+    for (int y = 0; y< ROWS; y++) {
+        for (int x = 0; x< COLS; x++) {
+            uint32_t color;
+            if ((x+y)%2 == 0) {
+                color = 0xFF0000FF;
+            } else {
+                color = BACKGROUND_COLOR;
+            }
+            olivec_fill_rect(pixels, WIDTH, HEIGHT, x*CELL_WIDTH, y*CELL_HEIGHT, CELL_WIDTH, CELL_HEIGHT, color);
+        }
+    }
+    const char *file_path = "checker_example.ppm";
     Errno err = olivec_save_to_ppm_file(pixels, WIDTH, HEIGHT, file_path);
     if (err) {
         fprintf(stderr, "ERROR: could not save file %s: %s\n", file_path, strerror(errno));
+        return false;
     }
+
+    return true;
+}
+
+int main(void) {
+    checker_example();
     return 0;
 }
