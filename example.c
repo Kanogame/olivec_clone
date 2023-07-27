@@ -63,8 +63,18 @@ bool checker_example() {
 
 bool circle_example() {
     olivec_fill(pixels, WIDTH, HEIGHT, 0xFF202020);
+    int radius = CELL_WIDTH;
+    if (CELL_HEIGHT < radius) {
+        radius = CELL_HEIGHT;
+    }
 
-    olivec_fill_circle(pixels, WIDTH, HEIGHT, WIDTH /2, HEIGHT / 2, 100, 0xFF2020FF);
+     for (int y = 0; y< ROWS; y++) {
+        for (int x = 0; x< COLS; x++) {
+            olivec_fill_circle(pixels, WIDTH, HEIGHT, x*CELL_WIDTH + CELL_WIDTH / 2, y*CELL_HEIGHT + CELL_HEIGHT / 2, radius / 2, 0xFF2020FF);
+        }
+    }
+
+    //olivec_fill_circle(pixels, WIDTH, HEIGHT, WIDTH /2, HEIGHT / 2, 100, 0xFF2020FF);
 
     const char *file_path = "circle.ppm";
     Errno err = olivec_save_to_ppm_file(pixels, WIDTH, HEIGHT, file_path);
