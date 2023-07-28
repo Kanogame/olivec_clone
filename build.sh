@@ -1,3 +1,3 @@
 set -xe
 
-cc -Wall -Wextra -o a.out example.c
+cc -Wall -ggdb -Wextra -o a.out example.c
