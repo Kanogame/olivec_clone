@@ -50,7 +50,7 @@ bool circle_example() {
 
      for (int y = 0; y< ROWS; y++) {
         for (int x = 0; x< COLS; x++) {
-            olivec_fill_circle(pixels, WIDTH, HEIGHT, x*CELL_WIDTH + CELL_WIDTH / 2, y*CELL_HEIGHT + CELL_HEIGHT / 2, radius / 2, 0xFF2020FF);
+            olivec_fill_circle(pixels, WIDTH, HEIGHT, x*CELL_WIDTH + CELL_WIDTH / 2, y*CELL_HEIGHT + CELL_HEIGHT / 2, radius / 2, 0xFF00FF00);
         }
     }
 
@@ -79,7 +79,22 @@ bool lines_example() {
     return true;
 }
 
+bool triangle_example() {
+     olivec_fill(pixels, WIDTH, HEIGHT, 0xFF202020);
+
+    olivec_fill_triangle(pixels, WIDTH, HEIGHT, WIDTH/2, HEIGHT/8, 0xFF0000FF);
+
+    const char *file_path = "triangle.ppm";
+    Errno err = olivec_save_to_ppm_file(pixels, WIDTH, HEIGHT, file_path);
+    if (err) {
+        fprintf(stderr, "ERROR: could not save file %s: %s\n", file_path, strerror(errno));
+        return false;
+    }
+    return true;
+}
+
 int main(void) {
+    if (!triangle_example()) return -1;
     if (!checker_example()) return -1;
     if (!circle_example()) return -1;
     if (!lines_example()) return -1;
