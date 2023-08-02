@@ -53,7 +53,6 @@ void olivec_draw_line(uint32_t *pixels, size_t pixels_width, size_t pixels_heigh
     int dy = y2 -y1;
 
     if (dx != 0) {
-        int k = dy/dx;
         int c = y1 - dy*x1/dx;
 
         if (x1 > x2) swap_int(&x1, &x2);
@@ -84,50 +83,60 @@ void olivec_draw_line(uint32_t *pixels, size_t pixels_width, size_t pixels_heigh
 
 void olivec_sort_triangle_points_by_y(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3) {
     if (*y1 > *y2) {
-        swap_int(*y1, *y2);
-        swap_int(*x1, *x2);
+        swap_int(y1, y2);
+        swap_int(x1, x2);
     }
     if (*y2 > *y3) {
-        swap_int(*y2, *y3);
-        swap_int(*x2, *x3);
+        swap_int(y2, y3);
+        swap_int(x2, x3);
     }
     if (*y1 > *y2) {
-        swap_int(*y1, *y2);
-        swap_int(*x1, *x2);
+        swap_int(y1, y2);
+        swap_int(x1, x2);
     }
 } 
 
-bool olivec_line_of_segment(int x1, int y1, int x2, int y2, int *k, int *c) {
-    int dx = x2 - x1;
-    int dy = y2 - y1;
-
-    if (dx == 0) return;
-
-    *k = dy/dx;
-    *c = y1 - dy*x1/dx;
-
-    return true;
-}
-
 void olivec_fill_triangle(uint32_t *pixels, size_t width, size_t height, int x1, int y1, int x2, int y2, int x3, int y3, uint32_t color) {
-	sort_triangle_points_by_y(x1, y1, x2, y2, x3, y3);
+	olivec_sort_triangle_points_by_y(&x1, &y1, &x2, &y2, &x3, &y3);
 
-    int k12, c12;
-    if (!olivec_line_of_segment(x1, y1, x2, y2, &k12, &c12)) {
-        int k23, c23;
-        if(olivec_line_of_segment(x2, y2, x3, y3, &k23, &c23)) {
+    if (x1 != x3) { 
+        int dx13 = x3 - x1;
+        int dy13 = y3 - y1;
+        int c13 = y3 - dy13 *x3 / dx13;
+        if(x1 != x2) {
+            int dx12 = x2 - x1;
+            int dy12 = y2 - y1;
+            int c12 = y1 - dy12 *x1 / dx12;
             for(int y = y1; y <= y2; y++) {
-                int s1 = (y - c12)/k12;
-                int s2 = (y - c23)/k23;
-                if (s1 > s2) swap_int(s1, s2);
-                for (int x = s1; x<= s2; x++) {
-                    if (0 <= x && x < width) {
-                        pixels[y*width + x] = color;
+                if(0 <= y && (size_t)y < height) {
+                    int s1 = (y - c12)*dx12/dy12;
+                    int s2 = (y - c13)*dx13/dy13;
+                    if (s1 > s2) swap_int(&s1, &s2);
+                    for (int x = s1; x<= s2; x++) {
+                        if (0 <= x && (size_t)x < width) {
+                            pixels[y*width + x] = color;
+                        }
                     }
                 }
             }
-        } else {
-            //unreachable
+        }
+
+        if(x2 != x3) {
+            int dx23 = x2 - x3;
+            int dy23 = y2 - y3;
+            int c23 = y2 - dy23 *x2 / dx23;
+            for(int y = y2; y <= y3; y++) {
+                if(0 <= y && (size_t)y < height) {
+                    int s1 = (y - c23)*dx23/dy23;
+                    int s2 = (y - c13)*dx13/dy13;
+                    if (s1 > s2) swap_int(&s1, &s2);
+                    for (int x = s1; x<= s2; x++) {
+                        if (0 <= x && (size_t)x < width) {
+                            pixels[y*width + x] = color;
+                        }
+                    }
+                }
+            }
         }
     }
 

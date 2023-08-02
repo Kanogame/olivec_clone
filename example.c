@@ -80,9 +80,17 @@ bool lines_example() {
 }
 
 bool triangle_example() {
-     olivec_fill(pixels, WIDTH, HEIGHT, 0xFF202020);
+    olivec_fill(pixels, WIDTH, HEIGHT, 0xFF202020);
+    int x1 = WIDTH/2, y1 = HEIGHT/8;
+    int x2 = WIDTH/8, y2 =  HEIGHT/2;
+    int x3 = WIDTH*7/8, y3 = HEIGHT*7/8;
 
-    olivec_fill_triangle(pixels, WIDTH, HEIGHT, WIDTH/2, HEIGHT/8, 0xFF0000FF);
+    int radius = 10;
+    olivec_fill_circle(pixels, WIDTH, HEIGHT, x1, y1, radius, 0xFF00FFFF);
+    olivec_fill_circle(pixels, WIDTH, HEIGHT, x2, y2, radius, 0xFF00FFFF);
+    olivec_fill_circle(pixels, WIDTH, HEIGHT, x3, y3, radius, 0xFF00FFFF);
+
+    olivec_fill_triangle(pixels, WIDTH, HEIGHT, x1, y1, x2, y2, x3, y3, 0xFF0000FF);
 
     const char *file_path = "triangle.ppm";
     Errno err = olivec_save_to_ppm_file(pixels, WIDTH, HEIGHT, file_path);
