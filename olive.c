@@ -109,8 +109,8 @@ void olivec_fill_triangle(uint32_t *pixels, size_t width, size_t height, int x1,
             int c12 = y1 - dy12 *x1 / dx12;
             for(int y = y1; y <= y2; y++) {
                 if(0 <= y && (size_t)y < height) {
-                    int s1 = (y - c12)*dx12/dy12;
-                    int s2 = (y - c13)*dx13/dy13;
+                    int s1 = dy12 != 0 ? (y - c12)*dx12/dy12 : x1;
+                    int s2 = dy13 != 0 ? (y - c13)*dx13/dy13 : x1;
                     if (s1 > s2) swap_int(&s1, &s2);
                     for (int x = s1; x<= s2; x++) {
                         if (0 <= x && (size_t)x < width) {
@@ -127,8 +127,8 @@ void olivec_fill_triangle(uint32_t *pixels, size_t width, size_t height, int x1,
             int c23 = y2 - dy23 *x2 / dx23;
             for(int y = y2; y <= y3; y++) {
                 if(0 <= y && (size_t)y < height) {
-                    int s1 = (y - c23)*dx23/dy23;
-                    int s2 = (y - c13)*dx13/dy13;
+                    int s1 = dy23 != 0 ? (y - c23)*dx23/dy23 : x2;
+                    int s2 = dy23 != 0 ? (y - c13)*dx13/dy13 : x2;
                     if (s1 > s2) swap_int(&s1, &s2);
                     for (int x = s1; x<= s2; x++) {
                         if (0 <= x && (size_t)x < width) {
