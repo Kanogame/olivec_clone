@@ -1,5 +1,10 @@
 #ifndef OLIVE_C_
 #define OLIVE_C_
+#define COUNT_COMPS 4
+#define COMP_RED 0
+#define COMP_GREEN 1
+#define COMP_BLUE 2
+#define COMP_ALPHA 3
 
 void swap_int(int *value1, int *value2) {
     int mem = *value1;
@@ -79,6 +84,23 @@ void olivec_draw_line(uint32_t *pixels, size_t pixels_width, size_t pixels_heigh
             }
         }
     }
+}
+
+void unpack_rgba32(uint32_t c, uint8_t comp[COUNT_COMPS]) {
+    for (size_t i =0; i < COUNT_COMPS; i++) {
+        comp[i] = c&0xFF;
+        c >>= 8;
+    }
+}
+
+uint32_t olivec_mix_colors(uint32_t c1, uint32_t c2) {
+    uint32_t comp1[COUNT_COMPS];
+    unpack_rgba32(c1, comp1);
+
+    uint32_t comp2[COUNT_COMPS];
+    unpack_rgba32(c2, comp2);
+
+    comp1[]
 }
 
 void olivec_sort_triangle_points_by_y(int *x1, int *y1, int *x2, int *y2, int *x3, int *y3) {
